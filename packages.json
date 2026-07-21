@@ -2,15 +2,15 @@
   "name": "ayat-print",
   "private": true,
   "version": "1.0.0",
-  "description": "AyatPrint monorepo - Studio + API",
+  "description": "AyatPrint Monorepo",
   "scripts": {
-    "dev": "pnpm --recursive --parallel run dev",
-    "build": "pnpm --recursive run build",
-    "db:generate": "pnpm --filter @ayatstudio/db run generate",
-    "db:push": "pnpm --filter @ayatstudio/db run push"
+    "dev": "pnpm --recursive --parallel dev",
+    "build": "pnpm --recursive build",
+    "db:generate": "pnpm --filter ./packages/db generate",
+    "db:push": "pnpm --filter ./packages/db push"
   },
+  "packageManager": "pnpm@8.15.0",
   "engines": {
     "node": ">=18"
-  },
-  "packageManager": "pnpm@8.0.0"
+  }
 }
