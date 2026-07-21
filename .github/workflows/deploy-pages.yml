@@ -1,0 +1,220 @@
+name: Build & Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 🔧 Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: 📚 Install dependencies
+        run: pnpm install
+
+      - name: 🗄️ Generate Prisma Client (if needed)
+        run: pnpm db:generate 2>/dev/null || echo "⚠️ No Prisma schema"
+
+      - name: 🎨 Build Studio (Frontend)
+        run: pnpm --filter ./apps/studio build
+
+      - name: 📁 Prepare public folder
+        run: |
+          mkdir -p public/app
+          cp -r apps/studio/dist/* public/app/
+          echo "✅ Studio built and copied to public/app/"
+
+      - name: 🌐 Generate Landing Page (index.html)
+        run: |
+          cat > public/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="fr">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>AyatStudio - Design Open Source</title>
+            <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+            <style>
+              /* Reset & Base */
+              * { margin: 0; padding: 0; box-sizing: border-box; }
+              body { font-family: 'Inter', sans-serif; background: #0a0808; color: #f0ece6; overflow-x: hidden; }
+              .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+
+              /* Motif décoratif (géométrique islamique léger) */
+              .bg-pattern {
+                position: fixed;
+                top: 0; left: 0; width: 100%; height: 100%;
+                background-image: 
+                  radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.05) 0%, transparent 40%),
+                  repeating-linear-gradient(45deg, rgba(212,175,55,0.01) 0px, rgba(212,175,55,0.01) 2px, transparent 2px, transparent 8px);
+                pointer-events: none;
+                z-index: -1;
+              }
+
+              /* Header */
+              header { padding: 1.5rem 0; border-bottom: 1px solid rgba(212,175,55,0.15); }
+              nav { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+              .logo { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; color: #D4AF37; letter-spacing: 2px; }
+              .logo span { font-weight: 400; color: #f0ece6; }
+              .nav-links { display: flex; gap: 2rem; align-items: center; }
+              .nav-links a { color: #a09a94; text-decoration: none; font-weight: 400; transition: color 0.3s; }
+              .nav-links a:hover { color: #D4AF37; }
+              .btn-ghost { padding: 0.5rem 1.5rem; border: 1px solid #D4AF37; border-radius: 30px; color: #D4AF37; transition: all 0.3s; }
+              .btn-ghost:hover { background: #D4AF37; color: #0a0808; }
+
+              /* Hero */
+              .hero { padding: 6rem 0 4rem; text-align: center; position: relative; }
+              .hero h1 { font-family: 'Playfair Display', serif; font-size: 4rem; font-weight: 700; line-height: 1.2; margin-bottom: 1.5rem; }
+              .hero h1 .highlight { color: #D4AF37; font-style: italic; }
+              .hero p { font-size: 1.2rem; max-width: 600px; margin: 0 auto 2rem; color: #b0a8a0; }
+              .hero .cta-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
+              .btn-primary { padding: 0.8rem 2.5rem; background: #D4AF37; color: #0a0808; border-radius: 40px; font-weight: 600; text-decoration: none; transition: transform 0.3s, box-shadow 0.3s; display: inline-block; }
+              .btn-primary:hover { transform: scale(1.05); box-shadow: 0 8px 30px rgba(212, 175, 55, 0.3); }
+              .btn-secondary { padding: 0.8rem 2.5rem; background: transparent; color: #D4AF37; border: 1px solid #D4AF37; border-radius: 40px; font-weight: 600; text-decoration: none; transition: all 0.3s; display: inline-block; }
+              .btn-secondary:hover { background: #D4AF37; color: #0a0808; }
+
+              /* Features */
+              .features { padding: 4rem 0; }
+              .features h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; text-align: center; margin-bottom: 3rem; }
+              .features h2 span { color: #D4AF37; }
+              .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2rem; }
+              .card { background: rgba(255,255,255,0.04); border: 1px solid rgba(212,175,55,0.1); padding: 2rem 1.5rem; border-radius: 16px; backdrop-filter: blur(4px); transition: transform 0.3s, border-color 0.3s; text-align: center; }
+              .card:hover { transform: translateY(-8px); border-color: #D4AF37; }
+              .card .icon { font-size: 2.5rem; margin-bottom: 1rem; }
+              .card h3 { font-size: 1.3rem; margin-bottom: 0.5rem; color: #f0ece6; }
+              .card p { color: #b0a8a0; font-size: 0.95rem; line-height: 1.5; }
+
+              /* CTA Banner */
+              .cta-banner { background: linear-gradient(135deg, #1a1510 0%, #2a2018 100%); border: 1px solid rgba(212,175,55,0.2); border-radius: 20px; padding: 3rem 2rem; margin: 3rem 0; text-align: center; }
+              .cta-banner h3 { font-size: 2rem; font-family: 'Playfair Display', serif; }
+              .cta-banner h3 span { color: #D4AF37; }
+              .cta-banner p { margin: 1rem 0 2rem; color: #b0a8a0; }
+
+              /* Footer */
+              footer { border-top: 1px solid rgba(212,175,55,0.1); padding: 2rem 0; margin-top: 3rem; text-align: center; color: #6a625a; font-size: 0.9rem; }
+              footer a { color: #D4AF37; text-decoration: none; }
+              footer .social { margin: 1rem 0; display: flex; justify-content: center; gap: 1.5rem; }
+              footer .social a { color: #a09a94; font-size: 1.2rem; transition: color 0.3s; }
+              footer .social a:hover { color: #D4AF37; }
+
+              /* Responsive */
+              @media (max-width: 768px) {
+                .hero h1 { font-size: 2.5rem; }
+                .nav-links { display: none; }
+                .grid { grid-template-columns: 1fr; }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="bg-pattern"></div>
+
+            <header>
+              <div class="container">
+                <nav>
+                  <div class="logo">Ayat<span>Studio</span></div>
+                  <div class="nav-links">
+                    <a href="#features">Fonctionnalités</a>
+                    <a href="#about">À propos</a>
+                    <a href="https://github.com/AYATPRINT/ayat-print" target="_blank">GitHub</a>
+                    <a href="/app/" class="btn-ghost">Lancer le Studio</a>
+                  </div>
+                </nav>
+              </div>
+            </header>
+
+            <section class="hero">
+              <div class="container">
+                <h1>Créez l’art islamique<br><span class="highlight">comme jamais</span></h1>
+                <p>AyatStudio est un éditeur canvas open-source, conçu pour les calligraphies, les motifs géométriques et l’impression à la demande. Libérez votre créativité.</p>
+                <div class="cta-group">
+                  <a href="/app/" class="btn-primary">🎨 Lancer le Studio</a>
+                  <a href="https://github.com/AYATPRINT/ayat-print" class="btn-secondary">⭐ Star sur GitHub</a>
+                </div>
+              </div>
+            </section>
+
+            <section class="features" id="features">
+              <div class="container">
+                <h2>Des fonctionnalités <span>puissantes</span></h2>
+                <div class="grid">
+                  <div class="card">
+                    <div class="icon">✒️</div>
+                    <h3>Éditeur Canvas</h3>
+                    <p>Typographies arabes vectorielles, cadres dorés, calques et manipulation avancée avec Fabric.js.</p>
+                  </div>
+                  <div class="card">
+                    <div class="icon">🖼️</div>
+                    <h3>Mockups 3D</h3>
+                    <p>Visualisez vos créations dans des intérieurs luxueux (salon marocain, majlis, etc.).</p>
+                  </div>
+                  <div class="card">
+                    <div class="icon">📤</div>
+                    <h3>Export PDF & PNG</h3>
+                    <p>Générez des fichiers haute résolution prêts pour l’impression ou le partage.</p>
+                  </div>
+                  <div class="card">
+                    <div class="icon">🔓</div>
+                    <h3>100% Open Source</h3>
+                    <p>Licence AGPL, code transparent, communauté active. Contribuez et personnalisez !</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section id="about" class="container">
+              <div class="cta-banner">
+                <h3>Rejoignez la <span>communauté</span></h3>
+                <p>AyatStudio est construit par des passionnés, pour le monde. Toute contribution est la bienvenue.</p>
+                <a href="https://github.com/AYATPRINT/ayat-print" class="btn-primary">⭐ Devenir contributeur</a>
+              </div>
+            </section>
+
+            <footer>
+              <div class="container">
+                <div class="social">
+                  <a href="https://github.com/AYATPRINT/ayat-print" target="_blank">🐙 GitHub</a>
+                  <a href="#">🐦 Twitter</a>
+                  <a href="#">📧 Contact</a>
+                </div>
+                <p>&copy; 2026 AyatStudio – sous licence AGPL-3.0<br>Fait avec ❤️ par la communauté open source.</p>
+              </div>
+            </footer>
+          </body>
+          </html>
+          EOF
+
+      - name: 📤 Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      - name: 🚀 Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
