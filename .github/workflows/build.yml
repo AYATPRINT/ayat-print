@@ -13,23 +13,6 @@ jobs:
       - name: 📥 Checkout du code
         uses: actions/checkout@v4
 
-      # 🔥 ÉTAPE CRUCIALE : Extraire le ZIP source à la racine
-      - name: 📦 Extraire le ZIP source
-        run: |
-          if [ -f "AYATPRINT.zip" ]; then
-            echo "✅ ZIP trouvé, extraction en cours..."
-            unzip -o AYATPRINT.zip -d .
-            echo "📁 Structure après extraction :"
-            ls -la
-            echo "📁 Contenu de apps/ :"
-            ls -la apps/ 2>/dev/null || echo "⚠️ apps/ non trouvé"
-            echo "📁 Contenu de packages/ :"
-            ls -la packages/ 2>/dev/null || echo "⚠️ packages/ non trouvé"
-          else
-            echo "❌ AYATPRINT.zip introuvable ! Arrêt du workflow."
-            exit 1
-          fi
-
       - name: 📦 Installer Node.js 20
         uses: actions/setup-node@v4
         with:
