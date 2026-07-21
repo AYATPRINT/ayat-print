@@ -35,19 +35,34 @@ jobs:
         with:
           version: 8
 
+      # Se déplacer dans le sous-dossier où se trouve le vrai projet
+      - name: 📂 Enter project directory
+        run: |
+          if [ -d "AYATPRINT-MVP" ]; then
+            echo "PROJECT_DIR=AYATPRINT-MVP" >> $GITHUB_ENV
+          else
+            echo "PROJECT_DIR=." >> $GITHUB_ENV
+          fi
+
       - name: 📚 Install dependencies
-        run: pnpm install
+        run: |
+          cd ${{ env.PROJECT_DIR }}
+          pnpm install
 
       - name: 🗄️ Generate Prisma Client (if needed)
-        run: pnpm db:generate 2>/dev/null || echo "⚠️ No Prisma schema"
+        run: |
+          cd ${{ env.PROJECT_DIR }}
+          pnpm db:generate 2>/dev/null || echo "⚠️ No Prisma schema"
 
       - name: 🎨 Build Studio (Frontend)
-        run: pnpm --filter ./apps/studio build
+        run: |
+          cd ${{ env.PROJECT_DIR }}
+          pnpm --filter ./apps/studio build
 
       - name: 📁 Prepare public folder
         run: |
           mkdir -p public/app
-          cp -r apps/studio/dist/* public/app/
+          cp -r ${{ env.PROJECT_DIR }}/apps/studio/dist/* public/app/
           echo "✅ Studio built and copied to public/app/"
 
       - name: 🌐 Generate Landing Page (index.html)
