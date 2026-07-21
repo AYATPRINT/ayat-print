@@ -1,0 +1,48 @@
+name: Build & Package Artifacts
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:  # Permet de lancer manuellement depuis l'onglet "Actions" (sans push)
+
+jobs:
+  build-and-package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
+
+      - name: 📦 Installer Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 🔧 Installer pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: 📚 Installer les dépendances (monorepo)
+        run: pnpm install
+
+      - name: 🗄️ Générer le client Prisma
+        run: pnpm db:generate
+
+      - name: 🎨 Build du Frontend (Studio)
+        run: pnpm --filter @ayatstudio/studio build
+
+      - name: ⚙️ Build du Backend (API)
+        run: pnpm --filter @ayatstudio/api build
+
+      - name: 📤 Upload de l'artéfact Frontend (ZIP)
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-studio-build
+          path: apps/studio/dist
+
+      - name: 📤 Upload de l'artéfact Backend (ZIP)
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-api-build
+          path: apps/api/dist
