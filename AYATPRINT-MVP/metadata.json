@@ -1,0 +1,8 @@
+{
+  "name": "Remix: AyatPrint",
+  "description": "Authentic Quranic Print-On-Demand SaaS and Live Canva-Style Design Studio. Customize typography, calligraphy, colors, ornaments, layout and background.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

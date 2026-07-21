@@ -1,0 +1,26 @@
+[
+  {
+    "id": "col-modern-luxury",
+    "name": "Modern Islamic Luxury",
+    "description": "Bold minimalist layouts designed for contemporary architectural homes, featuring high-contrast typography, spacious negative space, and premium gold leaf accents.",
+    "theme": "Alabaster & Charcoal",
+    "stylePreset": "Modern Minimalist",
+    "image": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "id": "col-royal-emerald",
+    "name": "Royal Emerald Silk",
+    "description": "Deep imperial green background textures modeled on antique damascene silks, overlaid with glowing gold vector calligraphy and traditional geometric borders.",
+    "theme": "Sacred Emerald & Gilt Gold",
+    "stylePreset": "Traditional Royal",
+    "image": "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1200&q=80"
+  },
+  {
+    "id": "col-andalusian-heritage",
+    "name": "Moroccan Zellige Heritage Series",
+    "description": "Intricate mathematical star motifs and mosaic framing, paying homage to the architectural splendor of Granada and Marrakech.",
+    "theme": "Indigo Blue & Burnished Copper",
+    "stylePreset": "Andalusian Heritage",
+    "image": "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80"
+  }
+]

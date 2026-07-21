@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+  OPERATOR
+}
+
+enum JobStatus {
+  QUEUED
+  PROCESSING
+  PRINTING
+  SHIPPED
+  COMPLETED
+  FAILED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  role      Role     @default(CUSTOMER)
+  designs   Design[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Artwork {
+  id          String   @id @default(uuid())
+  title       String
+  surah       String?
+  category    String
+  vectorUrl   String
+  previewUrl  String
+  createdAt   DateTime @default(now())
+  designs     Design[]
+}
+
+model Design {
+  id            String     @id @default(uuid())
+  productId     String
+  title         String
+  material      String
+  frame         String
+  size          String
+  price         Float
+  canvasObjects Json
+  previewUrl    String
+  userId        String?
+  user          User?      @relation(fields: [userId], references: [id])
+  artworkId     String?
+  artwork       Artwork?   @relation(fields: [artworkId], references: [id])
+  printJobs     PrintJob[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model PrintJob {
+  id          String    @id @default(uuid())
+  designId    String
+  design      Design    @relation(fields: [designId], references: [id])
+  orderId     String?
+  status      JobStatus @default(QUEUED)
+  material    String
+  dimensions  String
+  frameStyle  String
+  highResUrl  String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}

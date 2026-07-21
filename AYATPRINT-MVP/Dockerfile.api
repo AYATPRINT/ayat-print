@@ -1,0 +1,27 @@
+# Multi-stage build for API
+FROM node:20-alpine AS base
+
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@8 --activate
+
+WORKDIR /app
+
+# Copy monorepo workspace configurations
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml* ./
+COPY tsconfig.base.json ./
+
+# Copy packages and apps
+COPY packages ./packages
+COPY apps/api ./apps/api
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile || pnpm install
+
+# Generate Prisma Client
+RUN pnpm db:generate
+
+# Expose port
+EXPOSE 3000
+
+# Start development server with hot reload
+CMD ["pnpm", "--filter", "@ayatstudio/api", "dev"]

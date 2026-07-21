@@ -1,0 +1,24 @@
+# Multi-stage build for Studio Frontend
+FROM node:20-alpine AS base
+
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@8 --activate
+
+WORKDIR /app
+
+# Copy monorepo workspace configurations
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml* ./
+COPY tsconfig.base.json ./
+
+# Copy packages and studio app
+COPY packages ./packages
+COPY apps/studio ./apps/studio
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile || pnpm install
+
+# Expose port
+EXPOSE 5173
+
+# Start Vite dev server with hot reload
+CMD ["pnpm", "--filter", "@ayatstudio/studio", "dev"]

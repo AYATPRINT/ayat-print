@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@200..1000&family=Changa:wght@200..800&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Lateef:wght@200..800&family=Mada:wght@200..900&family=Montserrat:ital,wght@0,300..700;1,300..700&family=Noto+Kufi+Arabic:wght@100..900&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Qahiri&family=Reem+Kufi:wght@400..700&family=Scheherazade+New:wght@400..700&family=Tajawal:wght@200..900&family=Cinzel:wght@400;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-display: "Cinzel", "Cormorant Garamond", serif;
+  
+  --color-art-cream: #FAF8F5;
+  --color-art-warm: #F4F0E8;
+  --color-art-sand: #E7E2D6;
+  --color-art-border: #D8D2C4;
+  --color-art-charcoal: #161514;
+  --color-art-gold: #C5A059;
+  --color-art-brass: #D4AF37;
+  --color-art-walnut: #2C1E16;
+  --color-art-emerald: #0D2818;
+}
+
+@layer utilities {
+  .bg-museum-vignette {
+    background: radial-gradient(circle at center, rgba(250, 248, 245, 1) 0%, rgba(244, 240, 232, 0.95) 70%, rgba(231, 226, 214, 0.8) 100%);
+  }
+  .gold-shimmer {
+    background: linear-gradient(135deg, #C5A059 0%, #E2C98A 50%, #9E7B3B 100%);
+  }
+  .text-gold-gradient {
+    background: linear-gradient(135deg, #A88238 0%, #D8B768 50%, #8A6828 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+/* Custom smooth luxury scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #FAF8F5;
+}
+::-webkit-scrollbar-thumb {
+  background: #D8D2C4;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C5A059;
+}
+
+

@@ -1,0 +1,46 @@
+[
+  {
+    "id": "trend-1",
+    "country": "USA",
+    "collection": "Modern Islamic Luxury",
+    "trendScore": 96,
+    "keywords": ["Surah Rahman", "Ayatul Kursi", "Islamic Minimalist Art"],
+    "colors": ["Gold", "Black", "Beige"],
+    "style": "Luxury Interior",
+    "growth": "+124% YoY",
+    "flag": "🇺🇸"
+  },
+  {
+    "id": "trend-2",
+    "country": "France",
+    "collection": "Contemporary Islamic Gallery",
+    "trendScore": 91,
+    "keywords": ["Arabic Calligraphy", "Modern Mosque Art"],
+    "colors": ["Cream", "Gold", "White"],
+    "style": "Classic Parisian",
+    "growth": "+88% YoY",
+    "flag": "🇫🇷"
+  },
+  {
+    "id": "trend-3",
+    "country": "United Arab Emirates",
+    "collection": "Royal Al-Andalus Heritage",
+    "trendScore": 98,
+    "keywords": ["Surah Al-Waqi'ah", "Emerald Gilded Calligraphy"],
+    "colors": ["Deep Emerald", "24K Gold Foil", "Alabaster"],
+    "style": "Palatial Arabesque",
+    "growth": "+142% YoY",
+    "flag": "🇦🇪"
+  },
+  {
+    "id": "trend-4",
+    "country": "Morocco",
+    "collection": "Maghreb Geometric Majesty",
+    "trendScore": 89,
+    "keywords": ["Surah Al-Fatiha", "Zellige Star Mosaic"],
+    "colors": ["Indigo", "Saffron Gold", "Sandstone"],
+    "style": "Andalusian Riad",
+    "growth": "+75% YoY",
+    "flag": "🇲🇦"
+  }
+]

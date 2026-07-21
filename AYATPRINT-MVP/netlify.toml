@@ -1,0 +1,20 @@
+[build]
+  command = "pnpm --filter @ayatstudio/studio build"
+  publish = "apps/studio/dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+  PNPM_FLAGS = "--no-frozen-lockfile"
+
+# Redirect API calls to Render Backend API
+[[redirects]]
+  from = "/api/*"
+  to = "https://ayatstudio-api.onrender.com/api/:splat"
+  status = 200
+  force = true
+
+# SPA Fallback Redirect for React Router & Deep Links
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

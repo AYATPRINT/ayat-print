@@ -1,0 +1,42 @@
+[
+  {
+    "id": "style-modern-gold",
+    "name": "Modern Gold",
+    "description": "Fine 24K metallic gold gradients over sleek ivory alabaster marble backdrop.",
+    "useGoldGradient": true,
+    "bgTexture": "marble",
+    "borderThickness": 4,
+    "innerPadding": 20,
+    "decorativeFrame": "gold-foil"
+  },
+  {
+    "id": "style-minimal",
+    "name": "Minimal",
+    "description": "Ultra-clean high-contrast typography, generous blank spacing, black inks on vellum.",
+    "useGoldGradient": false,
+    "bgTexture": "none",
+    "borderThickness": 1,
+    "innerPadding": 24,
+    "decorativeFrame": "minimal"
+  },
+  {
+    "id": "style-traditional",
+    "name": "Traditional",
+    "description": "Classic Naskh script nestled in an intricate Moroccan zellige star layout.",
+    "useGoldGradient": true,
+    "bgTexture": "parchment",
+    "borderThickness": 5,
+    "innerPadding": 22,
+    "decorativeFrame": "zellige"
+  },
+  {
+    "id": "style-luxury",
+    "name": "Luxury",
+    "description": "Royal emerald green silk with heavy gold arabesque borders and floral corners.",
+    "useGoldGradient": true,
+    "bgTexture": "emerald-silk",
+    "borderThickness": 6,
+    "innerPadding": 18,
+    "decorativeFrame": "ottoman"
+  }
+]

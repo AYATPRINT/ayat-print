@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: ayatstudio_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ayat_studio_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ayat_network
+
+  # API Backend
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: ayatstudio_api
+    restart: always
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - DATABASE_URL=postgresql://postgres:password@db:5432/ayat_studio_db
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    networks:
+      - ayat_network
+    volumes:
+      - ./apps/api:/app/apps/api
+      - ./packages:/app/packages
+      - ./tsconfig.base.json:/app/tsconfig.base.json
+      - ./pnpm-workspace.yaml:/app/pnpm-workspace.yaml
+    command: pnpm --filter @ayatstudio/api dev
+
+  # Frontend Studio
+  studio:
+    build:
+      context: .
+      dockerfile: Dockerfile.studio
+    container_name: ayatstudio_studio
+    restart: always
+    environment:
+      - VITE_API_URL=http://localhost:3000/api
+    ports:
+      - "5173:5173"
+    depends_on:
+      - api
+    networks:
+      - ayat_network
+    volumes:
+      - ./apps/studio:/app/apps/studio
+      - ./packages:/app/packages
+      - ./tsconfig.base.json:/app/tsconfig.base.json
+      - ./pnpm-workspace.yaml:/app/pnpm-workspace.yaml
+    command: pnpm --filter @ayatstudio/studio dev
+
+volumes:
+  postgres_data:
+
+networks:
+  ayat_network:
+    driver: bridge

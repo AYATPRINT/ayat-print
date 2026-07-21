@@ -1,0 +1,50 @@
+name: Build & Package Artifacts
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-and-package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Install Dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: pnpm db:generate
+
+      - name: Build Studio Frontend
+        run: pnpm --filter @ayatstudio/studio build
+
+      - name: Build API Backend
+        run: pnpm --filter @ayatstudio/api build
+
+      - name: Upload Studio Frontend Bundle Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: studio-frontend-dist
+          path: apps/studio/dist/
+          retention-days: 7
+
+      - name: Upload API Backend Compiled Code Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-backend-dist
+          path: apps/api/dist/
+          retention-days: 7

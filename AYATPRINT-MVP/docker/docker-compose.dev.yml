@@ -1,0 +1,19 @@
+version: '3.8'
+
+# Development overrides (e.g., volume mounts for hot-reloading)
+services:
+  wordpress:
+    volumes:
+      - ../poc/wordpress/wp-content:/var/www/html/wp-content
+    environment:
+      WORDPRESS_DEBUG: 1
+
+  ayat_studio:
+    volumes:
+      - ../ayat-studio:/app
+    command: ["echo", "Running Studio in Dev Mode..."]
+
+  api:
+    volumes:
+      - ../api:/usr/src/app
+    command: ["echo", "Running API in Dev Mode..."]

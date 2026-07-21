@@ -1,0 +1,16 @@
+{
+  "name": "ayat-studio-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --recursive --parallel run dev",
+    "build": "pnpm --recursive run build",
+    "lint": "pnpm --recursive run lint",
+    "db:generate": "pnpm --filter @ayatstudio/db run generate",
+    "db:push": "pnpm --filter @ayatstudio/db run push"
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5",
+    "typescript": "^5.3.3"
+  }
+}

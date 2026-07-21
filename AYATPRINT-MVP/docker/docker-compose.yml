@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  wordpress:
+    build:
+      context: ../poc/wordpress
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: wordpress_db
+      WORDPRESS_DB_USER: ayat_user
+      WORDPRESS_DB_PASSWORD: ayat_password
+      WORDPRESS_DB_NAME: ayat_wp
+      AYAT_STUDIO_URL: http://localhost:5173
+      AYAT_API_URL: http://api:3002
+    depends_on:
+      - wordpress_db
+      - api
+    networks:
+      - ayat_network
+
+  wordpress_db:
+    image: mysql:8.0
+    container_name: ayat_wp_db
+    environment:
+      MYSQL_DATABASE: ayat_wp
+      MYSQL_USER: ayat_user
+      MYSQL_PASSWORD: ayat_password
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    ports:
+      - "3306:3306"
+    networks:
+      - ayat_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: wordpress_db
+    depends_on:
+      - wordpress_db
+    networks:
+      - ayat_network
+
+  ayat_studio:
+    build:
+      context: ..
+      dockerfile: ayat-studio/Dockerfile
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://localhost:3002
+    networks:
+      - ayat_network
+
+  api:
+    build:
+      context: ../api
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3002"
+    networks:
+      - ayat_network
+
+networks:
+  ayat_network:
+    driver: bridge
